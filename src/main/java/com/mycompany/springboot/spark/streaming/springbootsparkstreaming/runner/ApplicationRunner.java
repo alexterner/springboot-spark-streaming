@@ -30,13 +30,7 @@ public class ApplicationRunner implements CommandLineRunner{
     private Environment env;
 
     @Autowired
-    private SparkSession sparkSession;
-
-    @Autowired
     private JavaStreamingContext jssc;
-
-    @Autowired
-    private JavaSparkContext sc;
 
     @Value("${streaming.host:localhost}")
     private String streamingHost;

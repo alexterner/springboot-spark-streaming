@@ -30,15 +30,15 @@ public class SparkConfiguration {
     @Value("${spark.home}")
     private String sparkHome;
 
-    @Value("${master.uri:local}")
-    private String masterUri;
+    @Value("${local.master:local[*]}")
+    private String master;
 
     @Bean
     public SparkConf sparkConf() {
         SparkConf sparkConf = new SparkConf()
                 .setAppName(appName)
                 //.setSparkHome(sparkHome)
-                .setMaster(masterUri);
+                .setMaster(master);
 
         return sparkConf;
     }
@@ -48,18 +48,18 @@ public class SparkConfiguration {
         return new JavaSparkContext( sparkConf() );
     }
 
-    @Bean
+  /*  @Bean
     public SparkSession sparkSession() {
         return SparkSession
                 .builder()
                 .sparkContext(javaSparkContext().sc())
                 .appName( appName )
                 .getOrCreate();
-    }
+    }*/
 
     @Bean
     public JavaStreamingContext javaStreamingContext(){
-        return new JavaStreamingContext( sparkConf(), Duration.apply(2) );
+        return new JavaStreamingContext( javaSparkContext(), new Duration(2000) );
     }
 
 

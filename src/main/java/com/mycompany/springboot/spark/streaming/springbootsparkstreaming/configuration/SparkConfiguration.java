@@ -4,12 +4,19 @@ package com.mycompany.springboot.spark.streaming.springbootsparkstreaming.config
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.apache.spark.*;
+import org.apache.spark.api.java.function.*;
+import org.apache.spark.streaming.*;
+import org.apache.spark.streaming.api.java.*;
+import scala.Tuple2;
+
 
 @Configuration
 public class SparkConfiguration {
@@ -38,7 +45,7 @@ public class SparkConfiguration {
 
     @Bean
     public JavaSparkContext javaSparkContext() {
-        return new JavaSparkContext(sparkConf());
+        return new JavaSparkContext( sparkConf() );
     }
 
     @Bean
@@ -46,9 +53,16 @@ public class SparkConfiguration {
         return SparkSession
                 .builder()
                 .sparkContext(javaSparkContext().sc())
-                .appName("Java Spark SQL basic example")
+                .appName( appName )
                 .getOrCreate();
     }
+
+    @Bean
+    public JavaStreamingContext javaStreamingContext(){
+        return new JavaStreamingContext( sparkConf(), Duration.apply(2) );
+    }
+
+
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {

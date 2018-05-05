@@ -1,8 +1,8 @@
 package com.mycompany.springboot.spark.streaming.springbootsparkstreaming.runner;
 
 
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.SparkSession;
+
+import com.mycompany.springboot.spark.streaming.springbootsparkstreaming.post.processor.AutowiredLog;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaPairDStream;
 import org.apache.spark.streaming.api.java.JavaReceiverInputDStream;
@@ -22,9 +22,10 @@ import java.util.regex.Pattern;
 @Component
 public class ApplicationRunner implements CommandLineRunner{
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationRunner.class);
-
     private static final Pattern SPACE = Pattern.compile(" ");
+
+    @AutowiredLog
+    private Logger logger;
 
     @Autowired
     private Environment env;
@@ -40,6 +41,8 @@ public class ApplicationRunner implements CommandLineRunner{
 
     @Override
     public void run(String... args) throws Exception {
+
+        logger.info("Start Spark Streaming to listen on host :" + streamingHost + ", port : " + streamingPort);
 
         // Create a DStream that will connect to hostname:port, like localhost:12345
         JavaReceiverInputDStream<String> lines = jssc.socketTextStream(streamingHost, Integer.valueOf(streamingPort));

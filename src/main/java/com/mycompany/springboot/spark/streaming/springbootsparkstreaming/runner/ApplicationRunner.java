@@ -106,7 +106,7 @@ public class ApplicationRunner implements CommandLineRunner{
 
             JavaPairRDD<String, Integer> initialRDD = jssc.sparkContext().parallelizePairs(initValues);
 
-
+            jssc.checkpoint("/tmp/checkpoint");
 
             // Create a DStream that will connect to hostname:port, like localhost:12345
             JavaReceiverInputDStream<String> lines = jssc.socketTextStream(streamingHost, Integer.valueOf(streamingPort), StorageLevels.MEMORY_ONLY);
@@ -132,7 +132,7 @@ public class ApplicationRunner implements CommandLineRunner{
 
 
             // Print the first ten elements of each RDD generated in this DStream to the console
-            pairs.print();
+            stateDstream.print();
 
 
             jssc.start();              // Start the computation
